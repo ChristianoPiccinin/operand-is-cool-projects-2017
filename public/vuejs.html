@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Primeiro Teste Vue.js</title>
+</head>
+<body>
+    <div id="app">
+        <span v-bind:title="mensagem" v-if="isVisible">
+        {{ mensagem }}
+        </span>
+        <span v-else>
+        Outra mensagem
+        </span>
+        <ol>
+            <li v-for="item in listaDeItens">
+                {{ item.nome }}
+            </li>
+        </ol>
+    </div>
+</body>
+<script src="https://unpkg.com/vue/dist/vue.js" ></script>
+<script type="text/javascript">
+    var app = new Vue({
+        el : '#app',
+        data : {
+            mensagem: 'Hello World',
+            isVisible: false,
+            listaDeItens: [
+                { nome: 'Aprenda JavaScript' },
+                { nome: 'Aprenda Vue' },
+                { nome: 'Construa algo impressionante' }
+            ]
+        },
+        created: function() {
+            console.log('Instância Vue.js criada!');
+        }
+    });
+</script>
+</html>

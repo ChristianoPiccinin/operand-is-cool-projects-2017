@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+	<meta charset="utf-8">
+	<!-- Latest compiled and minified CSS -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+	<!-- Optional theme -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body>
+	<div class="container-fluid" id="app">
+		<div class="page-header">
+ 			<h1>Operand <small>is Cool</small></h1>
+ 			{{message}}
+		</div>
+		<div class="row">
+			<div class="col-xs-12">
+				<button class="btn btn-success pull-right" data-toggle="modal" data-target="#modalDeposito">Depositar</button>				
+				<button class="btn btn-danger pull-right" data-toggle="modal" data-target="#modalSaque">Sacar</button>
+				<button class="btn btn-info pull-right" data-toggle="modal" data-target="#modalTransferencia">Transferir</button>
+			</div>
+		</div>
+		<br>&nbsp;
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="panel panel-default">
+				  <div class="panel-heading">
+				    <h3 class="panel-title">Conta Bancária :
+				    {{ bankAccount1.name}} 
+				    <span class="pull-right"> Saldo: {{bankAccount1.balance}}</span>
+				    </h3>
+				  </div>
+				  <div class="panel-body">
+				    <table class="table table-hover">
+					  <thead>
+					  	<tr>
+					  		<td>#</td>
+					  		<td>Operação</td>
+					  		<td>Data</td>
+					  		<td>Valor</td>
+					  	</tr>
+					  </thead>
+					  <tbody>
+					  	<tr v-for="(itemH,indexH) in bankAccount1.operations">
+					  		<td>{{itemH.id}}</td>
+					  		<td>{{itemH.operation}}</td>
+					  		<td>{{itemH.date}}</td>
+					  		<td>{{itemH.value}}</td>
+					  	</tr>
+					  </tbody>
+					</table>
+				  </div>
+				</div>
+			</div>
+		</div>
+		<div class="modal fade" id="modalDeposito" tabindex="-1" role="dialog">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title">Depósito</h4>
+		      </div>
+		      <div class="modal-body">
+		      <form>
+		      	<div class="form-group">
+				    <label>Conta Bancária</label>
+				    <select class="form-control">
+				    	<option>Conta 1</option>
+				    	<option>Conta 2</option>
+				    </select>
+				</div>
+				<div class="form-group">
+				    <label for="depositValue">Valor do Saque</label>
+				    <input type="text" class="form-control" id="depositValue">
+				</div>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+		        <button type="button" class="btn btn-primary">Salvar</button>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+
+		<div class="modal fade" id="modalSaque" tabindex="-1" role="dialog">
+		  <div class="modal-dialog" role="document">
+		    <div class="modal-content">
+		      <div class="modal-header">
+		        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+		        <h4 class="modal-title">Saque</h4>
+		      </div>
+		      <div class="modal-body">
+		      <form>
+		      	<div class="form-group">
+				    <label>Conta Bancária</label>
+				    <select class="form-control">
+				    	<option>Conta 1</option>
+				    	<option>Conta 2</option>
+				    </select>
+				</div>
+				<div class="form-group">
+				    <label for="depositValue">Valor do Saque</label>
+				    <input type="text" class="form-control" id="depositValue">
+				</div>
+		      </div>
+		      <div class="modal-footer">
+		        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+		        <button type="button" class="btn btn-primary">Salvar</button>
+		      </div>
+		    </div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+	</div>
+
+	<script type="text/javascript" src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+	<!-- Latest compiled and minified JavaScript -->
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+	<script src="https://unpkg.com/vue/dist/vue.js" ></script>
+	<script type="text/javascript">
+	    var app =  new Vue({
+	    	el : '#app',
+	    	data:{
+	    		message:'Hello World',
+	    		bankAccount1:{
+	    			id:0,
+	    			name:'Conta 1',
+	    			balance:0,
+	    			operations:[],
+	    		},
+	    	},
+	    	methods:{
+	    		loadDataFromAccount1:function(){
+	    			var vm = this;
+	    			axios.get('/v1/bankaccounts/search/1')
+	    			.then(function(response){
+	    				vm.bankAccount1 = response.data;
+	    			})
+	    			.catch(function(error){
+	    				console.log(error);
+	    			});
+	    		},
+	    	},
+	    	mounted: function(){
+	    		var vm = this;
+	    		setInterval(function(){
+	    			vm.loadDataFromAccount1();
+	    		},30000);
+	    		this.loadDataFromAccount1();
+	    	},
+	    });
+	</script>
+
+
+
+
+</body>
+<html>

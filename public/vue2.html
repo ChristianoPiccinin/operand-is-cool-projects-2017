@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+    <html>
+    <head>
+        <title>Primeiro Teste Vue.js</title>
+    </head>
+    <body>
+        <div id="app">
+            <!-- retorna string<input type="text" name="number" v-model="number">
+            {{number}} -->
+            <!-- retorna number -->
+            <input type="text" name="number" v-model.number="number">
+            {{number}}
+            <br /><br />
+            <input type="checkbox" name="myCheck" v-model="myCheck" value="A">
+            <input type="checkbox" name="myCheck" v-model="myCheck" value="B">
+            <input type="checkbox" name="myCheck" v-model="myCheck" value="C">
+            {{myCheck}}
+            <br /><br />
+            <input type="checkbox" name="myCheck2" v-model="myCheck2" v-bind:true-value="'A'" v-bind:false-value="'B'">
+            {{myCheck2}}
+            <br /><br />
+            <input type="radio" name="myCheck3" v-model="myCheck3" value="A">
+            <input type="radio" name="myCheck3" v-model="myCheck3" value="B">
+            <input type="radio" name="myCheck3" v-model="myCheck3" value="C">
+            {{myCheck3}}
+            <br /><br />
+            <!-- <select v-model="mySelect">
+                <option>A</option>
+                <option>B</option>
+                <option>C</option>
+            </select>
+            {{mySelect}} -->
+            <select v-model="mySelect" multiple>
+                <option v-bind:value="1">A</option>
+                <option v-bind:value="2">B</option>
+                <option v-bind:value="3">C</option>
+            </select>
+            {{mySelect}}
+        </div>
+    </body>
+    <script src="https://unpkg.com/vue/dist/vue.js" ></script>
+    <script type="text/javascript">
+        // app é o ViewModel
+        var app = new Vue({
+            el : '#app',
+            data : {
+                number: 0,
+                myCheck : [],
+                myCheck2 : false,
+                myCheck3 : '',
+                mySelect : [],
+            },
+        });
+    </script>
+    </html>
