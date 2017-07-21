@@ -134,7 +134,7 @@ $app->get('/v1/bankaccounts/search/{id:[0-9]+}',function($id)use ($app){
     $result = $app->db->query($sql,array($id));
     $result->setFetchMode(Phalcon\Db::FETCH_OBJ);
 
-    $data = $array();
+    $data = array();
     $bankAccount = $result->fetch();
     $response = new Phalcon\Http\Response();
 
@@ -155,7 +155,7 @@ $app->get('/v1/bankaccounts/search/{id:[0-9]+}',function($id)use ($app){
         $response->setJsonContent(array(
             'id' =>$bankAccount->id,
             'name'=>$bankAccount->name,
-            'balance'=>$bank_account->balance,
+            'balance'=>$bankAccount->balance,
             'operations'=>$bankAccountOperations,
 
 
@@ -166,11 +166,87 @@ $app->get('/v1/bankaccounts/search/{id:[0-9]+}',function($id)use ($app){
 
 
 
+
+$app->post('/v1/bankaccounts/deposit',function() use ($app){
+    $depostInfo = $app->request->getPost();
+    if(!$depostInfo){
+        $depostInfo = (array) $app->request->getJsonRawBody();
+    }
+    $response = new Phalcon\Http\response();
+    try {
+        $result = $app->db->insert("bank_account_operations",
+            array("deposit",$depostInfo['bank_account_id'],$depostInfo['value'],date('Y-m-d H:i:s')),
+            array("operation","bank_account_id","value","date")
+        );
+
+
+        //atualizar saldo bancario
+        $sqlUpdate="UPDATE bank_account set balance = (
+            SELECT sum(value) as balance from bank_account_operations where
+                bank_account_id = ?) where id= ?";
+
+        $app->db->query($sqlUpdate, array($depostInfo['bank_account_id'],
+            $depostInfo['bank_account_id']));
+        $response->setStatusCode(201,"Created");
+        
+        $response->setJsonContent(array('status' => 'OK'));
+
+    } catch (Exception $e) {
+        $response->setStatusCode(409, "Conflict");
+        $errors[] = $e->getMessage();
+        $response->setJsonContent(array('status' => 'ERROR', 'messages' => $errors));
+    }
+    return $response;
+
+});
+
+
+
+
+$app->post('/v1/bankaccounts/withdrawal',function() use ($app){
+    $withdrawalInfo = $app->request->getPost();
+    if(!$withdrawalInfo){
+        $withdrawalInfo = (array) $app->request->getJsonRawBody();
+    }
+    $response = new Phalcon\Http\Response();
+    
+    try {
+        $result = $app->db->insert("bank_account_operations",
+            array("withdrawal",$withdrawalInfo['bank_account_id'],$withdrawalInfo['value']*-1,date('Y-m-d H:i:s')),
+
+            array("operation","bank_account_id","value","date")
+        );
+
+
+        //atualizar saldo bancario
+        $sqlUpdate="UPDATE bank_account set balance = (
+            SELECT sum(value) as balance from bank_account_operations where
+                bank_account_id = ?) where id= ?";
+
+        $app->db->query($sqlUpdate, array($withdrawalInfo['bank_account_id'],
+            $withdrawalInfo['bank_account_id']));
+        $response->setStatusCode(201,"Created");
+        
+        $response->setJsonContent(array('status' => 'OK'));
+
+    } catch (Exception $e) {
+        $response->setStatusCode(409, "Conflict");
+        $errors[] = $e->getMessage();
+        $response->setJsonContent(array('status' => 'ERROR', 'messages' => $errors));
+    }
+    return $response;
+
+});
+
+
+
 $app->notFound(function () use ($app){
 	$app->response->setStatusCode(404,"Not Found")->sendHeaders();
 	echo 'This is Crazy, but this page was not found or was found!';
 
 });
+
+
 
 
 $app->handle();

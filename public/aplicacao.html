@@ -48,7 +48,7 @@
 					  		<td>{{itemH.id}}</td>
 					  		<td>{{itemH.operation}}</td>
 					  		<td>{{itemH.date}}</td>
-					  		<td>{{itemH.value}}</td>
+					  		<td>R$ {{itemH.value}}</td>
 					  	</tr>
 					  </tbody>
 					</table>
@@ -67,19 +67,19 @@
 		      <form>
 		      	<div class="form-group">
 				    <label>Conta Bancária</label>
-				    <select class="form-control">
-				    	<option>Conta 1</option>
-				    	<option>Conta 2</option>
+				    <select v-model="depositAccountModel" class="form-control">
+				    	<option value="1">Conta 1</option>
+				    	
 				    </select>
 				</div>
 				<div class="form-group">
-				    <label for="depositValue">Valor do Saque</label>
-				    <input type="text" class="form-control" id="depositValue">
+				    <label for="depositValue">Valor do deposito</label>
+				    <input v-model ="depositValueModel" type="text" class="form-control" id="depositValue">
 				</div>
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-		        <button type="button" class="btn btn-primary">Salvar</button>
+		        <button  @click="deposito" type="button" class="btn btn-primary">Salvar</button>
 		      </div>
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
@@ -96,19 +96,19 @@
 		      <form>
 		      	<div class="form-group">
 				    <label>Conta Bancária</label>
-				    <select class="form-control">
-				    	<option>Conta 1</option>
-				    	<option>Conta 2</option>
+				    <select v-model = "withdrawlAccountModel" class="form-control">
+				    	<option value="1" >Conta 1</option>
+				    	
 				    </select>
 				</div>
 				<div class="form-group">
 				    <label for="depositValue">Valor do Saque</label>
-				    <input type="text" class="form-control" id="depositValue">
+				    <input v-model="withdrawlValueModel" type="text" class="form-control" id="depositValue">
 				</div>
 		      </div>
 		      <div class="modal-footer">
 		        <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-		        <button type="button" class="btn btn-primary">Salvar</button>
+		        <button @click="saque" type="button" class="btn btn-primary">Salvar</button>
 		      </div>
 		    </div><!-- /.modal-content -->
 		  </div><!-- /.modal-dialog -->
@@ -134,6 +134,10 @@
 	    			balance:0,
 	    			operations:[],
 	    		},
+	    		withdrawlValueModel:0,
+	    		depositValueModel:0,
+	    		withdrawlAccountModel:1,
+	    		depositAccountModel:1,
 	    	},
 	    	methods:{
 	    		loadDataFromAccount1:function(){
@@ -141,6 +145,39 @@
 	    			axios.get('/v1/bankaccounts/search/1')
 	    			.then(function(response){
 	    				vm.bankAccount1 = response.data;
+	    			})
+	    			.catch(function(error){
+	    				console.log(error);
+	    			});
+	    		},
+	    		deposito:function(){
+	    			var vm = this;
+	    			axios.post('/v1/bankaccounts/deposit',{
+	    				bank_account_id:vm.depositAccountModel,
+	    				value:vm.depositValueModel,
+
+	    			})
+	    			.then(function(response){
+	    				console.log(response);
+	    				vm.loadDataFromAccount1();
+
+	    			})
+	    			.catch(function(error){
+	    				console.log(error);
+	    			});
+
+	    		},
+	    		saque:function(){
+	    			var vm = this;
+	    			axios.post('/v1/bankaccounts/withdrawal', {
+	    				bank_account_id: vm.withdrawlAccountModel,
+	    				value: vm.withdrawlValueModel,
+
+	    			})
+	    			.then(function(response){
+	    				console.log(response);
+	    				vm.loadDataFromAccount1();
+
 	    			})
 	    			.catch(function(error){
 	    				console.log(error);
